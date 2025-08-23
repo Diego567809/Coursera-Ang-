@@ -1,0 +1,53 @@
+// app.component.ts
+import { Component, HostBinding } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  // Variable con interpolación
+  nombre: string = 'Mi Primera SPA en Angular';
+
+  // Uso de @HostBinding para aplicar clase de Bootstrap directamente al host
+  @HostBinding('class') hostClass = 'container mt-5';
+
+  // Array de elementos
+  items: string[] = ['Angular', 'Bootstrap', 'TypeScript'];
+
+  // Método para agregar un nuevo item
+  agregarItem(nuevo: string) {
+    if (nuevo.trim() !== '') {
+      this.items.push(nuevo);
+    }
+  }
+}
+<!-- app.component.html -->
+<div class="card shadow p-4">
+  <h2 class="text-primary text-center">{{ nombre }}</h2>
+  <p class="text-muted text-center">Ejemplo básico con Angular + Bootstrap</p>
+
+  <!-- Listado con *ngFor -->
+  <ul class="list-group mb-3">
+    <li class="list-group-item" *ngFor="let item of items">
+      {{ item }}
+    </li>
+  </ul>
+
+  <!-- Formulario para agregar nuevo item -->
+  <form (ngSubmit)="agregarItem(nuevoItem.value)" class="d-flex gap-2">
+    <input type="text" class="form-control" placeholder="Nuevo elemento" #nuevoItem>
+    <button type="submit" class="btn btn-success">Agregar</button>
+  </form>
+</div>
+/* app.component.css */
+/* Opcional, estilos propios además de bootstrap */
+.card {
+  max-width: 500px;
+  margin: auto;
+}
+"styles": [
+  "node_modules/bootstrap/dist/css/bootstrap.min.css",
+  "src/styles.css"
+]
