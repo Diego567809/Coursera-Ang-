@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Angular Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.18.3/minified.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.11.5/zone.min.js"></script>
+    <script src="https://unpkg.com/@angular/core@12.2.16/bundles/core.umd.js"></script>
+    <script src="https://unpkg.com/@angular/common@12.2.16/bundles/common.umd.js"></script>
+    <script src="https://unpkg.com/@angular/compiler@12.2.16/bundles/compiler.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser@12.2.16/bundles/platform-browser.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser-dynamic@12.2.16/bundles/platform-browser-dynamic.umd.js"></script>
+    <script src="https://unpkg.com/@angular/animations@12.2.16/bundles/animations.umd.js"></script>
+    <script src="https://unpkg.com/@angular/router@12.2.16/bundles/router.umd.js"></script>
+    <script src="https://unpkg.com/@ngrx/store@12.5.1/bundles/store.umd.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2c3e50;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+        }
+        
+        .explanation {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .map-container {
+            height: 400px;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .animated-box {
+            width: 100px;
+            height: 100px;
+            background-color: #3498db;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .tracking-stats {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .tracking-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema Angular Completo con Mapbox, Animaciones, Directivas y Testing</h1>
+    
+    <div class="container">
+        <div class="card">
+            <h2>1. Paquetes npm para Mapbox</h2>
+            <div class="code-block">
+// package.json
+{
+  "name": "mi-aplicacion-angular",
+  "version": "1.0.0",
+  "dependencies": {
+    "@angular/animations": "^12.2.0",
+    "@angular/common": "^12.2.0",
+    "@angular/compiler": "^12.2.0",
+    "@angular/core": "^12.2.0",
+    "@angular/forms": "^12.2.0",
+    "@angular/platform-browser": "^12.2.0",
+    "@angular/platform-browser-dynamic": "^12.2.0",
+    "@angular/router": "^12.2.0",
+    "@ngrx/store": "^12.5.0",
+    "ngx-mapbox-gl": "^5.2.0",           // Paquete ngx-mapbox-gl
+    "mapbox-gl": "^2.9.2",
+    "rxjs": "~6.6.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@types/mapbox-gl": "0.49.0",        // Versión específica de tipos
+    "@angular-devkit/build-angular": "^12.2.0",
+    "@angular/cli": "^12.2.0",
+    "@angular/compiler-cli": "^12.2.0",
+    "@types/jasmine": "~3.8.0",
+    "jasmine-core": "~3.8.0",
+    "karma": "~6.3.0",
+    "karma-chrome-headless": "~3.1.0",
+    "karma-coverage": "~2.0.0",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "~1.7.0",
+    "typescript": "~4.3.0",
+    "cypress": "^9.5.0"                  // Cypress para testing E2E
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Se instalan los paquetes necesarios: <span class="highlight">ngx-mapbox-gl</span> para la integración con Angular y <span class="highlight">@types/mapbox-gl@0.49.0</span> para las definiciones de TypeScript.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>2. Componente con Mapa Mapbox y Marker Interactivo</h2>
+            <div class="code-block">
+// map.component.ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-map',
+  template: `
+    <div class="map-container">
+      <mgl-map
+        [style]="'mapbox://styles/mapbox/streets-v11'"
+        [zoom]="[12]"
+        [center]="[-58.3816, -34.6037]"
+      >
+        <mgl-marker 
+          [lngLat]="[-58.3816, -34.6037]"
+          (click)="showPopup()">
+          <div class="marker" style="width: 20px; height: 20px; background-color: red; border-radius: 50%;"></div>
+        </mgl-marker>
+        
+        <mgl-popup *ngIf="showPopover" [lngLat]="[-58.3816, -34.6037]">
+          <h3>¡Hola!</h3>
+          <p>Este es un popup que se muestra al hacer click en el marker.</p>
+        </mgl-popup>
+      </mgl-map>
+    </div>
+  `
+})
+export class MapComponent implements OnInit {
+  showPopover = false;
+  
+  ngOnInit() {
+    // Configuración del token de Mapbox (debe estar en variables de entorno)
+    // mapboxgl.accessToken = environment.mapboxToken;
+  }
+  
+  showPopup() {
+    this.showPopover = true;
+    setTimeout(() => {
+      this.showPopover = false;
+    }, 3000);
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Componente que muestra un mapa de Mapbox con un marker. Al hacer click en el marker, se muestra un popup con un mensaje durante 3 segundos.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>3. Componente con Animación</h2>
+            <div class="code-block">
+// animated.component.ts
+import { Component, Input } from '@angular/core';
+import { trigger, transition, style, animate, state } from '@angular/animations';
+
+@Component({
+  selector: 'app-animated',
+  template: `
+    <div [@colorChange]="color" class="animated-box" (click)="toggleColor()">
+      {{ color }}
+    </div>
+  `,
+  animations: [
+    trigger('colorChange', [
+      state('blue', style({
+        backgroundColor: '#3498db',
+        transform: 'scale(1)'
+      })),
+      state('green', style({
+        backgroundColor: '#2ecc71',
+        transform: 'scale(1.1)'
+      })),
+      transition('blue <=> green', [
+        animate('0.5s ease-in-out')
+      ])
+    ])
+  ]
+})
+export class AnimatedComponent {
+  @Input() color = 'blue';
+  
+  toggleColor() {
+    this.color = this.color === 'blue' ? 'green' : 'blue';
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Componente con una animación que cambia de color y escala cuando se hace click. La animación se activa cuando la propiedad <span class="highlight">color</span> cambia.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>4. Directiva Personalizada para Tracking de Clicks</h2>
+            <div class="code-block">
+// click-tracker.directive.ts
+import { Directive, ElementRef, OnInit, HostListener, Input } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { trackClick } from './tracking.actions';
+
+@Directive({
+  selector: '[appClickTracker]'
+})
+export class ClickTrackerDirective implements OnInit {
+  @Input() trackingTag: string = '';
+  @Input() trackingCategory: string = 'default';
+  
+  constructor(
+    private el: ElementRef,           // Inyección de ElementRef
+    private store: Store
+  ) {}
+  
+  ngOnInit() {
+    // Leer atributos de tracking del elemento DOM
+    const tag = this.el.nativeElement.getAttribute('data-tracking-tag') || this.trackingTag;
+    const category = this.el.nativeElement.getAttribute('data-tracking-category') || this.trackingCategory;
+    
+    if (tag) {
+      this.trackingTag = tag;
+    }
+    if (category) {
+      this.trackingCategory = category;
+    }
+  }
+  
+  @HostListener('click', ['$event'])
+  onClick(event: Event) {
+    // Registrar el click en Redux
+    this.store.dispatch(trackClick({
+      tag: this.trackingTag,
+      category: this.trackingCategory,
+      timestamp: new Date(),
+      element: this.el.nativeElement.tagName
+    }));
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Directiva personalizada que recibe <span class="highlight">ElementRef</span> por inyección de dependencias y se suscribe a eventos de click del DOM. Lee "tracking tags" de los elementos y registra la actividad.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>5. Uso de la Directiva en Templates HTML</h2>
+            <div class="code-block">
+// app.component.html
+<div class="container">
+  <h1>Mi Aplicación con Tracking</h1>
+  
+  <!-- Uso de la directiva con atributos personalizados -->
+  <button 
+    appClickTracker 
+    data-tracking-tag="main-button" 
+    data-tracking-category="navigation">
+    Botón Principal
+  </button>
+  
+  <div 
+    appClickTracker 
+    [trackingTag]="'info-box'" 
+    [trackingCategory]="'content'"
+    style="padding: 20px; background: #f0f0f0; margin: 20px 0; cursor: pointer;">
+    Haz click aquí para más información
+  </div>
+  
+  <a 
+    href="#" 
+    appClickTracker 
+    data-tracking-tag="external-link" 
+    data-tracking-category="navigation"
+    style="display: block; margin: 10px 0;">
+    Enlace externo
+  </a>
+  
+  <!-- Componente con animación -->
+  <app-animated></app-animated>
+  
+  <!-- Componente de mapa -->
+  <app-map></app-map>
+  
+  <!-- Mostrar estadísticas de tracking -->
+  <div class="tracking-stats">
+    <h3>Estadísticas de Clicks</h3>
+    <div *ngFor="let item of trackingStats$ | async" class="tracking-item">
+      <span>{{ item.tag }} ({{ item.category }})</span>
+      <span>{{ item.count }} clicks</span>
+    </div>
+  </div>
+</div>
+            </div>
+            <div class="explanation">
+                <p>Uso de la directiva personalizada en varios elementos HTML. La directiva lee los <span class="highlight">data-tracking-tag</span> y <span class="highlight">data-tracking-category</span> para identificar los elementos.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>6. Redux para Tracking y Contadores Reactivos</h2>
+            <div class="code-block">
+// tracking.actions.ts
+import { createAction, props } from '@ngrx/store';
+
+export const trackClick = createAction(
+  '[Tracking] Track Click',
+  props<{ tag: string; category: string; timestamp: Date; element: string }>()
+);
+
+// tracking.reducer.ts
+import { createReducer, on } from '@ngrx/store';
+import { trackClick } from './tracking.actions';
+
+export interface TrackingState {
+  clicks: Array<{
+    tag: string;
+    category: string;
+    timestamp: Date;
+    element: string;
+  }>;
+  counts: {
+    [key: string]: number; // key: `${category}-${tag}`
+  };
+}
+
+export const initialState: TrackingState = {
+  clicks: [],
+  counts: {}
+};
+
+export const trackingReducer = createReducer(
+  initialState,
+  on(trackClick, (state, { tag, category, timestamp, element }) => {
+    const key = `${category}-${tag}`;
+    const currentCount = state.counts[key] || 0;
+    
+    return {
+      clicks: [...state.clicks, { tag, category, timestamp, element }],
+      counts: {
+        ...state.counts,
+        [key]: currentCount + 1
+      }
+    };
+  })
+);
+
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { StoreModule } from '@ngrx/store';
+import { trackingReducer } from './tracking.reducer';
+
+@NgModule({
+  imports: [
+    BrowserModule,
+    StoreModule.forRoot({ tracking: trackingReducer })
+  ]
+})
+export class AppModule { }
+            </div>
+            
+            <h3>Componente para Mostrar Estadísticas</h3>
+            <div class="code-block">
+// app.component.ts
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  trackingStats$: Observable<Array<{tag: string; category: string; count: number}>>;
+  
+  constructor(private store: Store<{ tracking: any }>) {
+    this.trackingStats$ = this.store.select('tracking').pipe(
+      map(trackingState => {
+        return Object.entries(trackingState.counts).map(([key, count]) => {
+          const [category, tag] = key.split('-');
+          return { tag, category, count: count as number };
+        });
+      })
+    );
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Implementación de Redux para tracking de clicks. Los contadores se actualizan de manera reactiva y se muestran en la interfaz de usuario.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>7. Testing Unitario con Jasmine para Reducers</h2>
+            <div class="code-block">
+// tracking.reducer.spec.ts
+import { trackingReducer, initialState } from './tracking.reducer';
+import { trackClick } from './tracking.actions';
+
+describe('Tracking Reducer', () => {
+  it('should return the initial state', () => {
+    const action = {} as any;
+    const result = trackingReducer(undefined, action);
+    expect(result).toEqual(initialState);
+  });
+
+  it('should handle trackClick action', () => {
+    const action = trackClick({
+      tag: 'test-button',
+      category: 'test',
+      timestamp: new Date('2023-01-01'),
+      element: 'BUTTON'
+    });
+    
+    const result = trackingReducer(initialState, action);
+    
+    expect(result.clicks.length).toBe(1);
+    expect(result.clicks[0].tag).toBe('test-button');
+    expect(result.counts['test-test-button']).toBe(1);
+  });
+
+  it('should increment count for same tag and category', () => {
+    const action1 = trackClick({
+      tag: 'same-button',
+      category: 'same',
+      timestamp: new Date('2023-01-01'),
+      element: 'BUTTON'
+    });
+    
+    const action2 = trackClick({
+      tag: 'same-button',
+      category: 'same',
+      timestamp: new Date('2023-01-02'),
+      element: 'BUTTON'
+    });
+    
+    let state = trackingReducer(initialState, action1);
+    state = trackingReducer(state, action2);
+    
+    expect(state.clicks.length).toBe(2);
+    expect(state.counts['same-same-button']).toBe(2);
+  });
+
+  it('should not mutate previous state', () => {
+    const action = trackClick({
+      tag: 'test-button',
+      category: 'test',
+      timestamp: new Date('2023-01-01'),
+      element: 'BUTTON'
+    });
+    
+    const result = trackingReducer(initialState, action);
+    
+    // Verificar que el estado original no fue mutado
+    expect(initialState.clicks.length).toBe(0);
+    expect(initialState.counts['test-test-button']).toBeUndefined();
+    
+    // Verificar que el nuevo estado es diferente
+    expect(result).not.toBe(initialState);
+  });
+});
+            </div>
+            <div class="explanation">
+                <p>Tests unitarios con Jasmine para el reducer de tracking. Se verifica que es una función pura (no muta el estado original) y que maneja correctamente las acciones.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>8. Configuración de Cypress y Tests E2E</h2>
+            <div class="code-block">
+// cypress/integration/app.spec.js
+describe('Mi Aplicación Angular', () => {
+  beforeEach(() => {
+    cy.visit('http://localhost:4200');
+  });
+
+  it('debe mostrar el título correctamente', () => {
+    cy.contains('h1', 'Mi Aplicación con Tracking');
+  });
+
+  it('debe registrar clicks en elementos con tracking', () => {
+    cy.get('button').contains('Botón Principal').click();
+    cy.get('div').contains('Haz click aquí para más información').click();
+    
+    // Verificar que los contadores se actualizan
+    cy.get('.tracking-stats').should('contain', 'main-button');
+    cy.get('.tracking-stats').should('contain', 'info-box');
+  });
+
+  it('debe animar el componente al hacer click', () => {
+    cy.get('app-animated .animated-box')
+      .should('have.css', 'background-color', 'rgb(52, 152, 219)') // Azul inicial
+      .click()
+      .should('have.css', 'background-color', 'rgb(46, 204, 113)'); // Verde después del click
+  });
+});
+            </div>
+            
+            <h3>Configuración de Cypress</h3>
+            <div class="code-block">
+// cypress.json
+{
+  "baseUrl": "http://localhost:4200",
+  "viewportWidth": 1280,
+  "viewportHeight": 720,
+  "defaultCommandTimeout": 10000,
+  "video": false
+}
+
+// package.json (scripts adicionales)
+{
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "e2e": "ng e2e --port=4200",
+    "e2e:ci": "ng e2e --port=4200 --watch=false"
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Configuración de Cypress para pruebas end-to-end con al menos 3 tests que verifican: el título de la aplicación, el tracking de clicks y las animaciones.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>9. Integración con CircleCI</h2>
+            <div class="code-block">
+// .circleci/config.yml
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.13.0-browsers
+    working_directory: ~/app
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Instalar dependencias
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Ejecutar tests unitarios
+          command: npm test -- --watch=false --browsers=ChromeHeadless
+      - run:
+          name: Build de la aplicación
+          command: npm run build -- --prod
+      - run:
+          name: Ejecutar tests e2e
+          command: npm run e2e:ci
+          environment:
+            CI: true
+      - store_artifacts:
+          path: ./dist
+          destination: dist
+      - store_test_results:
+          path: ./test-results
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+            </div>
+            <div class="explanation">
+                <p>Configuración de CircleCI para integración continua. Incluye instalación de dependencias, ejecución de tests unitarios, build de producción y tests end-to-end con Cypress.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Resumen de Implementación</h2>
+            <p>Esta implementación cumple con todos los requisitos solicitados:</p>
+            <ol>
+                <li>Paquetes npm para Mapbox (ngx-mapbox-gl y @types/mapbox-gl)</li>
+                <li>Marker en mapa con popup al hacer click</li>
+                <li>Componente con animación al cambiar propiedades</li>
+                <li>Directiva personalizada para tracking de clicks</li>
+                <li>Directiva que recibe ElementRef y se suscribe a eventos DOM</li>
+                <li>Uso de directiva con "tracking tags" en templates HTML</li>
+                <li>Redux para tracking con contadores reactivos</li>
+                <li>Tests unitarios con Jasmine para reducers</li>
+                <li>Cypress con 3 tests E2E para la aplicación</li>
+                <li>Integración con CircleCI mediante archivo config.yml</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
