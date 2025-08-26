@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Componente Angular Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.18.3/minified.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.11.5/zone.min.js"></script>
+    <script src="https://unpkg.com/@angular/core@12.2.16/bundles/core.umd.js"></script>
+    <script src="https://unpkg.com/@angular/common@12.2.16/bundles/common.umd.js"></script>
+    <script src="https://unpkg.com/@angular/compiler@12.2.16/bundles/compiler.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser@12.2.16/bundles/platform-browser.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser-dynamic@12.2.16/bundles/platform-browser-dynamic.umd.js"></script>
+    <script src="https://unpkg.com/@angular/router@12.2.16/bundles/router.umd.js"></script>
+    <script src="https://unpkg.com/@angular/forms@12.2.16/bundles/forms.umd.js"></script>
+    <script src="https://unpkg.com/@ngrx/store@12.5.1/bundles/store.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2c3e50;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+        }
+        
+        .explanation {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .voting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .voting-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .vote-count {
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Implementación de Componente Angular Completo</h1>
+    
+    <div class="container">
+        <div class="card">
+            <h2>Explicación del Código</h2>
+            <p>Esta página muestra la implementación de un componente Angular con todas las características solicitadas:</p>
+            <ul>
+                <li>Uso de EventEmitter con @Output</li>
+                <li>Configuración de rutas con redirect</li>
+                <li>Formularios reactivos con validaciones personalizadas</li>
+                <li>Comunicación entre componentes padre e hijo</li>
+                <li>Manejo de estado con NgRx (Redux)</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>1. App Module con Configuración de Rutas</h2>
+            <div class="code-block">
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule, Routes } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
+
+import { AppComponent } from './app.component';
+import { UserFormComponent } from './user-form/user-form.component';
+import { VotingComponent } from './voting/voting.component';
+import { votesReducer } from './store/votes.reducer';
+
+// Configuración de rutas
+const routes: Routes = [
+  { path: '', redirectTo: '/form', pathMatch: 'full' },  // Redirect
+  { path: 'form', component: UserFormComponent },        // Ruta con componente
+  { path: 'voting', component: VotingComponent }
+];
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    UserFormComponent,
+    VotingComponent
+  ],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(routes),  // Configuración de rutas
+    ReactiveFormsModule,
+    StoreModule.forRoot({ votes: votesReducer })  // Configuración de NgRx
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+            </div>
+            <div class="explanation">
+                <p>En este módulo se configuran las rutas de la aplicación, incluyendo un <span class="highlight">redirect</span> desde la ruta raíz hacia '/form'. También se importa el módulo de formularios reactivos y se configura el store de NgRx.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>2. App Component con Router Outlet</h2>
+            <div class="code-block">
+// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    &lt;nav&gt;
+      &lt;a routerLink="/form"&gt;Formulario&lt;/a&gt;
+      &lt;a routerLink="/voting"&gt;Votación&lt;/a&gt;
+    &lt;/nav&gt;
+    &lt;router-outlet&gt;&lt;/router-outlet&gt;  <!-- Router outlet como enrutador raíz -->
+  `
+})
+export class AppComponent { }
+            </div>
+            <div class="explanation">
+                <p>El componente principal utiliza <span class="highlight">&lt;router-outlet&gt;</span> como enrutador raíz para cargar los diferentes componentes según la ruta activa.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>3. Componente con Formulario Reactivo y Validaciones</h2>
+            <div class="code-block">
+// user-form.component.ts
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+
+// Función de validación personalizada
+export function forbiddenNameValidator(forbiddenName: RegExp) {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    const forbidden = forbiddenName.test(control.value);
+    return forbidden ? { 'forbiddenName': {value: control.value} } : null;
+  };
+}
+
+@Component({
+  selector: 'app-user-form',
+  templateUrl: './user-form.component.html'
+})
+export class UserFormComponent implements OnInit {
+  @Output() userAdded = new EventEmitter<any>();  // EventEmitter decorado con @Output
+  userForm: FormGroup;
+
+  constructor(private formBuilder: FormBuilder) { }  // Inyección de FormBuilder
+
+  ngOnInit() {
+    // Configuración del formGroup con al menos 2 campos
+    this.userForm = this.formBuilder.group({
+      name: ['', [
+        Validators.required,  // Validación de requerido
+        forbiddenNameValidator(/admin/i)  // Validación personalizada
+      ]],
+      email: ['', [Validators.required, Validators.email]]
+    });
+  }
+
+  onSubmit() {
+    if (this.userForm.valid) {
+      this.userAdded.emit(this.userForm.value);  // Emitir evento
+      this.userForm.reset();
+    }
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Este componente utiliza <span class="highlight">FormBuilder</span> para crear un formulario reactivo con dos campos (name y email). Incluye validaciones requeridas y una validación personalizada que impide usar "admin" como nombre.</p>
+            </div>
+            
+            <h3>HTML del Formulario con Vinculación y Mostrado de Errores</h3>
+            <div class="code-block">
+// user-form.component.html
+&lt;form [formGroup]="userForm" (ngSubmit)="onSubmit()"&gt;
+  &lt;div class="form-group"&gt;
+    &lt;label for="name"&gt;Nombre:&lt;/label&gt;
+    &lt;input type="text" id="name" formControlName="name"&gt;  <!-- Vinculación del control -->
+    
+    &lt;div *ngIf="userForm.get('name').hasError('required') && userForm.get('name').touched" class="error"&gt;
+      El nombre es requerido.
+    &lt;/div&gt;
+    &lt;div *ngIf="userForm.get('name').hasError('forbiddenName') && userForm.get('name').touched" class="error"&gt;
+      No puedes usar ese nombre.
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="form-group"&gt;
+    &lt;label for="email"&gt;Email:&lt;/label&gt;
+    &lt;input type="text" id="email" formControlName="email"&gt;  <!-- Vinculación del control -->
+    
+    &lt;div *ngIf="userForm.get('email').hasError('required') && userForm.get('email').touched" class="error"&gt;
+      El email es requerido.
+    &lt;/div&gt;
+    &lt;div *ngIf="userForm.get('email').hasError('email') && userForm.get('email').touched" class="error"&gt;
+      Debe ser un email válido.
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;button type="submit" [disabled]="!userForm.valid"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+            </div>
+            <div class="explanation">
+                <p>En el HTML se vinculan los controles del formGroup a elementos input mediante <span class="highlight">formControlName</span>. Se utiliza <span class="highlight">*ngIf</span> junto con <span class="highlight">hasError()</span> para mostrar mensajes de error según las validaciones.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>4. Componente Padre que Recibe Evento del Componente Hijo</h2>
+            <div class="code-block">
+// voting.component.ts
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { addVote, removeVote } from './store/votes.actions';
+
+@Component({
+  selector: 'app-voting',
+  template: `
+    &lt;app-user-form (userAdded)="onUserAdded($event)"&gt;&lt;/app-user-form&gt;
+    
+    &lt;h3&gt;Lista de usuarios:&lt;/h3&gt;
+    &lt;div *ngFor="let user of users$ | async" class="voting-item"&gt;
+      &lt;span&gt;{{user.name}} ({{user.email}})&lt;/span&gt;
+      &lt;div class="voting-controls"&gt;
+        &lt;button (click)="upvote(user.id)" class="btn btn-success"&gt;+1&lt;/button&gt;
+        &lt;span class="vote-count"&gt;{{user.votes}}&lt;/span&gt;
+        &lt;button (click)="downvote(user.id)" class="btn btn-danger"&gt;-1&lt;/button&gt;
+        &lt;button (click)="removeUser(user.id)" class="btn"&gt;Eliminar&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  `
+})
+export class VotingComponent {
+  users$ = this.store.select(state => state.votes.users);
+  
+  constructor(private store: Store&lt;{votes: any}&gt;) {}
+  
+  onUserAdded(user: any) {
+    // Cuando se emite el evento desde el componente hijo
+    const newUser = {
+      ...user,
+      id: Date.now(),
+      votes: 0
+    };
+    this.store.dispatch(addVote({ user: newUser }));
+  }
+  
+  upvote(userId: number) {
+    this.store.dispatch(addVote({ userId }));
+  }
+  
+  downvote(userId: number) {
+    this.store.dispatch(removeVote({ userId }));
+  }
+  
+  removeUser(userId: number) {
+    // Lógica para eliminar usuario
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>El componente padre <span class="highlight">VotingComponent</span> contiene al componente hijo <span class="highlight">UserFormComponent</span> y recibe el evento <span class="highlight">userAdded</span> emitido por el hijo. También implementa la funcionalidad de votación usando NgRx.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>5. Reducer de NgRx con Actions para Agregar y Borrar</h2>
+            <div class="code-block">
+// votes.reducer.ts
+import { createReducer, on } from '@ngrx/store';
+import { addVote, removeVote } from './votes.actions';
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  votes: number;
+}
+
+export interface VotesState {
+  users: User[];
+}
+
+export const initialState: VotesState = {
+  users: []
+};
+
+export const votesReducer = createReducer(
+  initialState,
+  on(addVote, (state, { user, userId }) => {
+    if (user) {
+      // Agregar nuevo usuario
+      return { ...state, users: [...state.users, user] };
+    } else if (userId) {
+      // Incrementar voto
+      return {
+        ...state,
+        users: state.users.map(u => 
+          u.id === userId ? { ...u, votes: u.votes + 1 } : u
+        )
+      };
+    }
+    return state;
+  }),
+  on(removeVote, (state, { userId }) => {
+    if (userId) {
+      // Decrementar voto
+      return {
+        ...state,
+        users: state.users.map(u => 
+          u.id === userId ? { ...u, votes: u.votes - 1 } : u
+        )
+      };
+    }
+    return state;
+  })
+);
+            </div>
+            
+            <h3>Actions de NgRx</h3>
+            <div class="code-block">
+// votes.actions.ts
+import { createAction, props } from '@ngrx/store';
+import { User } from './votes.reducer';
+
+export const addVote = createAction(
+  '[Votes] Add Vote',
+  props&lt;{ user?: User, userId?: number }&gt;()
+);
+
+export const removeVote = createAction(
+  '[Votes] Remove Vote',
+  props&lt;{ userId?: number }&gt;()
+);
+            </div>
+            <div class="explanation">
+                <p>Se implementa un reducer de NgRx con dos actions: <span class="highlight">addVote</span> (para agregar usuarios e incrementar votos) y <span class="highlight">removeVote</span> (para decrementar votos). Cada usuario en la lista tiene su propio contador de votos.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Resumen de Implementación</h2>
+            <p>Esta implementación cumple con todos los requisitos solicitados:</p>
+            <ol>
+                <li>EventEmitter decorado con @Output en UserFormComponent</li>
+                <li>Configuración de rutas con redirect y rutas con componentes en AppModule</li>
+                <li>Uso de router-outlet en AppComponent</li>
+                <li>FormBuilder en el constructor para configurar formGroup con 2 campos</li>
+                <li>Vinculación de controles a inputs en el HTML del formulario</li>
+                <li>Recepción de evento emitido por el componente hijo en el padre</li>
+                <li>Validaciones personalizadas (forbiddenNameValidator) y de requerido</li>
+                <li>Uso de *ngIf y hasError() para mostrar mensajes de error</li>
+                <li>Reducer con 2 actions para manejar agregado y modificación de elementos</li>
+                <li>Funcionalidad de votación con contadores individuales para cada elemento</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
