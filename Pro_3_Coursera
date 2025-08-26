@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Angular Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.6.7/rxjs.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.18.3/minified.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zone.js/0.11.5/zone.min.js"></script>
+    <script src="https://unpkg.com/@angular/core@12.2.16/bundles/core.umd.js"></script>
+    <script src="https://unpkg.com/@angular/common@12.2.16/bundles/common.umd.js"></script>
+    <script src="https://unpkg.com/@angular/compiler@12.2.16/bundles/compiler.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser@12.2.16/bundles/platform-browser.umd.js"></script>
+    <script src="https://unpkg.com/@angular/platform-browser-dynamic@12.2.16/bundles/platform-browser-dynamic.umd.js"></script>
+    <script src="https://unpkg.com/@angular/router@12.2.16/bundles/router.umd.js"></script>
+    <script src="https://unpkg.com/@angular/forms@12.2.16/bundles/forms.umd.js"></script>
+    <script src="https://unpkg.com/@angular/http@7.2.16/bundles/http.umd.js"></script>
+    <script src="https://unpkg.com/@ngrx/store@12.5.1/bundles/store.umd.min.js"></script>
+    <script src="https://unpkg.com/dexie@3.2.1/dist/dexie.js"></script>
+    <script src="https://unpkg.com/express@4.18.2/index.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2c3e50;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+        }
+        
+        .explanation {
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .api-response {
+            background-color: #f0f8ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema Angular Completo con Guards, Servicios, API y Dexie</h1>
+    
+    <div class="container">
+        <div class="card">
+            <h2>1. Auth Guard que verifica si un usuario está logueado</h2>
+            <div class="code-block">
+// auth.guard.ts
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { AuthService } from './auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+  
+  constructor(private authService: AuthService, private router: Router) {}
+  
+  canActivate(): boolean {
+    if (this.authService.isLoggedIn()) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
+    }
+  }
+}
+            </div>
+            
+            <h3>Servicio de Autenticación</h3>
+            <div class="code-block">
+// auth.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private loggedIn = false;
+  
+  login() {
+    this.loggedIn = true;
+  }
+  
+  logout() {
+    this.loggedIn = false;
+  }
+  
+  isLoggedIn(): boolean {
+    return this.loggedIn;
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>El <span class="highlight">AuthGuard</span> utiliza el <span class="highlight">AuthService</span> para verificar si el usuario está logueado. Si no lo está, redirige a la página de login.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>2. Componente protegido por el Guard</h2>
+            <div class="code-block">
+// dashboard.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-dashboard',
+  template: `
+    &lt;h2&gt;Dashboard Protegido&lt;/h2&gt;
+    &lt;p&gt;Este componente solo es accesible para usuarios autenticados.&lt;/p&gt;
+  `
+})
+export class DashboardComponent { }
+            </div>
+            
+            <h3>Configuración de Ruta Protegida</h3>
+            <div class="code-block">
+// app-routing.module.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthGuard } from './auth.guard';
+
+const routes: Routes = [
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent,
+    canActivate: [AuthGuard]  // Protegido por el Guard
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+            </div>
+            <div class="explanation">
+                <p>El componente <span class="highlight">DashboardComponent</span> está protegido por el <span class="highlight">AuthGuard</span> mediante la propiedad <span class="highlight">canActivate</span> en la configuración de rutas.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>3. Variable de configuración con InjectionToken</h2>
+            <div class="code-block">
+// app.config.ts
+import { InjectionToken } from '@angular/core';
+
+export interface AppConfig {
+  apiUrl: string;
+  appName: string;
+  version: string;
+}
+
+export const APP_CONFIG: AppConfig = {
+  apiUrl: 'http://localhost:3000/api',
+  appName: 'Mi Aplicación',
+  version: '1.0.0'
+};
+
+export const APP_CONFIG_TOKEN = new InjectionToken&lt;AppConfig&gt;('app.config');
+            </div>
+            
+            <h3>Proveedor de Configuración</h3>
+            <div class="code-block">
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { APP_CONFIG, APP_CONFIG_TOKEN } from './app.config';
+
+@NgModule({
+  imports: [BrowserModule],
+  providers: [
+    { provide: APP_CONFIG_TOKEN, useValue: APP_CONFIG }  // Inyección con InjectionToken
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+            </div>
+            
+            <h3>Uso en un Servicio</h3>
+            <div class="code-block">
+// data.service.ts
+import { Injectable, Inject } from '@angular/core';
+import { APP_CONFIG_TOKEN, AppConfig } from './app.config';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  constructor(@Inject(APP_CONFIG_TOKEN) private config: AppConfig) {
+    console.log('API URL:', config.apiUrl);  // Uso de la configuración
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Se crea una variable de configuración <span class="highlight">APP_CONFIG</span> y un <span class="highlight">InjectionToken</span> para inyectarla como dependencia en los servicios y componentes.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>4. Inyección con useClass</h2>
+            <div class="code-block">
+// logger.interface.ts
+export abstract class Logger {
+  abstract log(message: string): void;
+  abstract error(message: string): void;
+}
+
+// console-logger.service.ts
+import { Injectable } from '@angular/core';
+import { Logger } from './logger.interface';
+
+@Injectable()
+export class ConsoleLogger extends Logger {
+  log(message: string): void {
+    console.log(`LOG: ${message}`);
+  }
+  
+  error(message: string): void {
+    console.error(`ERROR: ${message}`);
+  }
+}
+
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { Logger, ConsoleLogger } from './logger.interface';
+
+@NgModule({
+  providers: [
+    { provide: Logger, useClass: ConsoleLogger }  // useClass para vincular interfaz a clase concreta
+  ]
+})
+export class AppModule { }
+            </div>
+            <div class="explanation">
+                <p>Se utiliza <span class="highlight">useClass</span> para vincular una interfaz abstracta <span class="highlight">Logger</span> a una implementación concreta <span class="highlight">ConsoleLogger</span>.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>5. Inyección con useExisting</h2>
+            <div class="code-block">
+// cache.service.ts
+export abstract class CacheService {
+  abstract get(key: string): any;
+  abstract set(key: string, value: any): void;
+}
+
+// memory-cache.service.ts
+import { Injectable } from '@angular/core';
+import { CacheService } from './cache.service';
+
+@Injectable()
+export class MemoryCacheService extends CacheService {
+  private cache = new Map&lt;string, any&gt;();
+  
+  get(key: string): any {
+    return this.cache.get(key);
+  }
+  
+  set(key: string, value: any): void {
+    this.cache.set(key, value);
+  }
+}
+
+// optimized-cache.service.ts
+import { Injectable } from '@angular/core';
+import { CacheService } from './cache.service';
+
+@Injectable()
+export class OptimizedCacheService extends CacheService {
+  private cache = new Map&lt;string, any&gt;();
+  
+  get(key: string): any {
+    console.log('Getting from optimized cache:', key);
+    return this.cache.get(key);
+  }
+  
+  set(key: string, value: any): void {
+    console.log('Setting optimized cache:', key, value);
+    this.cache.set(key, value);
+  }
+}
+
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { CacheService, MemoryCacheService, OptimizedCacheService } from './cache.service';
+
+@NgModule({
+  providers: [
+    MemoryCacheService,
+    { provide: OptimizedCacheService, useClass: OptimizedCacheService },
+    { provide: CacheService, useExisting: OptimizedCacheService }  // useExisting para inyectar clase compatible
+  ]
+})
+export class AppModule { }
+            </div>
+            <div class="explanation">
+                <p>Se utiliza <span class="highlight">useExisting</span> para inyectar la clase <span class="highlight">OptimizedCacheService</span> cuando se solicita <span class="highlight">CacheService</span>. Ambas clases son compatibles porque heredan de la misma clase abstracta.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>6. API Express con endpoints GET y POST</h2>
+            <div class="code-block">
+// server.js (API Express)
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
+
+let items = [];  // Array en memoria
+
+// GET - Obtener todos los elementos
+app.get('/api/items', (req, res) => {
+  res.json(items);
+});
+
+// POST - Agregar un nuevo elemento
+app.post('/api/items', (req, res) => {
+  const newItem = {
+    id: Date.now(),
+    ...req.body
+  };
+  
+  items.push(newItem);
+  res.status(201).json(newItem);
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor Express ejecutándose en el puerto ${PORT}`);
+});
+            </div>
+            <div class="explanation">
+                <p>API Express simple que mantiene un array en memoria. Tiene un endpoint <span class="highlight">GET /api/items</span> para obtener todos los elementos y un endpoint <span class="highlight">POST /api/items</span> para agregar nuevos elementos recibiendo JSON.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>7. Servicio Angular para comunicación con API</h2>
+            <div class="code-block">
+// api.service.ts
+import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+  private apiUrl = 'http://localhost:3000/api';
+  
+  constructor(private http: Http) { }
+  
+  // GET - Obtener todos los elementos
+  getItems(): Observable&lt;any[]&gt; {
+    return this.http.get(`${this.apiUrl}/items`)
+      .pipe(map(response => response.json()));
+  }
+  
+  // POST - Agregar un nuevo elemento
+  addItem(item: any): Observable&lt;any&gt; {
+    return this.http.post(`${this.apiUrl}/items`, item)
+      .pipe(map(response => response.json()));
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Servicio Angular que se comunica asíncronamente con la API usando el módulo <span class="highlight">Http</span> de Angular. Proporciona métodos para obtener y agregar elementos.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>8. Integración con Redux para actualizar estado</h2>
+            <div class="code-block">
+// items.actions.ts
+import { createAction, props } from '@ngrx/store';
+
+export const addItem = createAction(
+  '[Items] Add Item',
+  props&lt;{ item: any }&gt;()
+);
+
+// items.reducer.ts
+import { createReducer, on } from '@ngrx/store';
+import { addItem } from './items.actions';
+
+export interface ItemsState {
+  items: any[];
+}
+
+export const initialState: ItemsState = {
+  items: []
+};
+
+export const itemsReducer = createReducer(
+  initialState,
+  on(addItem, (state, { item }) => ({
+    ...state,
+    items: [...state.items, item]
+  }))
+);
+
+// app.module.ts
+import { StoreModule } from '@ngrx/store';
+import { itemsReducer } from './items.reducer';
+
+@NgModule({
+  imports: [
+    StoreModule.forRoot({ items: itemsReducer })
+  ]
+})
+export class AppModule { }
+            </div>
+            
+            <h3>Servicio que notifica a Redux</h3>
+            <div class="code-block">
+// items.service.ts
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ApiService } from './api.service';
+import { addItem } from './items.actions';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ItemsService {
+  constructor(
+    private apiService: ApiService,
+    private store: Store
+  ) { }
+  
+  // Agregar elemento y notificar a Redux
+  addItem(item: any): void {
+    this.apiService.addItem(item).subscribe(
+      newItem => {
+        // Cuando el API retorna una respuesta afirmativa
+        this.store.dispatch(addItem({ item: newItem }));  // Notificar a Redux
+      },
+      error => {
+        console.error('Error al agregar item:', error);
+      }
+    );
+  }
+  
+  getItems() {
+    return this.apiService.getItems();
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Cuando la API retorna una respuesta afirmativa al agregar un elemento, el servicio <span class="highlight">ItemsService</span> notifica a Redux mediante el dispatch de la acción <span class="highlight">addItem</span>, lo que actualiza el estado y repercute en la interfaz de usuario.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>9. Base de datos Dexie con una entidad</h2>
+            <div class="code-block">
+// db.service.ts
+import { Injectable } from '@angular/core';
+import Dexie from 'dexie';
+
+export interface Item {
+  id?: number;
+  name: string;
+  description: string;
+  createdAt: Date;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DbService extends Dexie {
+  items: Dexie.Table&lt;Item, number&gt;;
+
+  constructor() {
+    super('MyAppDatabase');
+    this.version(1).stores({
+      items: '++id, name, description, createdAt'  // Esquema de la base de datos
+    });
+    
+    this.items = this.table('items');
+  }
+}
+            </div>
+            
+            <h3>Inyección de Dexie en un Componente</h3>
+            <div class="code-block">
+// items.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DbService, Item } from '../db.service';
+
+@Component({
+  selector: 'app-items',
+  template: `
+    &lt;h2&gt;Items desde Dexie&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li *ngFor="let item of items"&gt;{{item.name}} - {{item.description}}&lt;/li&gt;
+    &lt;/ul&gt;
+  `
+})
+export class ItemsComponent implements OnInit {
+  items: Item[] = [];
+  
+  constructor(private dbService: DbService) { }  // Inyección de Dexie
+  
+  async ngOnInit() {
+    this.items = await this.dbService.items.toArray();
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Se crea una base de datos Dexie con una entidad <span class="highlight">items</span> que se inyecta en el componente <span class="highlight">ItemsComponent</span> para acceder a los datos almacenados localmente.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>10. Integración completa: API → Redux → Dexie</h2>
+            <div class="code-block">
+// items.service.ts (completo)
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { ApiService } from './api.service';
+import { DbService } from './db.service';
+import { addItem } from './items.actions';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ItemsService {
+  constructor(
+    private apiService: ApiService,
+    private dbService: DbService,
+    private store: Store
+  ) { }
+  
+  // Agregar elemento, notificar a Redux y guardar en Dexie
+  addItem(item: any): void {
+    this.apiService.addItem(item).subscribe(
+      async newItem => {
+        // 1. Notificar a Redux
+        this.store.dispatch(addItem({ item: newItem }));
+        
+        // 2. Guardar asíncronamente en Dexie
+        try {
+          await this.dbService.items.add({
+            ...newItem,
+            createdAt: new Date()
+          });
+          console.log('Item guardado en Dexie');
+        } catch (error) {
+          console.error('Error al guardar en Dexie:', error);
+        }
+      },
+      error => {
+        console.error('Error al agregar item:', error);
+      }
+    );
+  }
+  
+  getItems() {
+    return this.apiService.getItems();
+  }
+  
+  getLocalItems() {
+    return this.dbService.items.toArray();
+  }
+}
+            </div>
+            <div class="explanation">
+                <p>Cuando se agrega un elemento exitosamente en la API, el servicio:</p>
+                <ol>
+                    <li>Notifica a Redux con un Action para actualizar el estado</li>
+                    <li>Guarda asíncronamente el elemento en la base de datos Dexie</li>
+                </ol>
+                <p>Esto asegura que los datos estén disponibles tanto en el servidor como localmente.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Resumen de Implementación</h2>
+            <p>Esta implementación cumple con todos los requisitos solicitados:</p>
+            <ol>
+                <li>Auth Guard que verifica autenticación usando un servicio</li>
+                <li>Componente Dashboard protegido por el Guard</li>
+                <li>Variable de configuración inyectada con InjectionToken</li>
+                <li>Inyección con useClass para vincular interfaz a clase concreta</li>
+                <li>Inyección con useExisting para clases compatibles</li>
+                <li>API Express que maneja un array en memoria con GET y POST</li>
+                <li>Servicio Angular que se comunica asíncronamente con la API</li>
+                <li>Notificación a Redux cuando la API responde afirmativamente</li>
+                <li>Base de datos Dexie con una entidad, inyectada en un componente</li>
+                <li>Persistencia en Dexie cuando se agregan elementos exitosamente</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
